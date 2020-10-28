@@ -12,8 +12,8 @@ install:
 script:
   - coverage run --source=messagebird -m unittest discover -s tests/
   - coverage report --fail-under=80
-  - pycodestyle --statistics --ignore=E121,E123,E126,E133,E226,E241,E242,E704,W503,W504,W505,E501 ./messagebird/
-  - pycodestyle --statistics --ignore=E121,E123,E126,E133,E226,E241,E242,E704,W503,W504,W505,E501 ./tests/
+  - pycodestyle --statistics --max-line-length=120 ./messagebird
+  - pycodestyle --statistics --max-line-length=160 ./tests
 matrix:
   allow_failures:
   - python: 'nightly'

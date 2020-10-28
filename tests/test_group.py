@@ -3,12 +3,61 @@ from unittest.mock import Mock
 
 from messagebird import Client
 
+TEST_GROUP_RESPONSE = """{
+  "id": "group-id",
+  "href": "https://rest.messagebird.com/groups/group-id",
+  "name": "Friends",
+  "contacts": {
+    "totalCount": 3,
+    "href": "https://rest.messagebird.com/groups/group-id"
+  },
+  "createdDatetime": "2018-07-25T12:16:10+00:00",
+  "updatedDatetime": "2018-07-25T12:16:23+00:00"
+}"""
+
+TEST_LIST_RESPONSE = """{
+  "offset": 0,
+  "limit": 25,
+  "count": 2,
+  "totalCount": 2,
+  "links": {
+    "first": "https://rest.messagebird.com/groups?offset=0&limit=10",
+    "previous": null,
+    "next": null,
+    "last": "https://rest.messagebird.com/groups?offset=0&limit=10"
+  },
+  "items": [
+    {
+      "id": "first-id",
+      "href": "https://rest.messagebird.com/groups/first-id",
+      "name": "First",
+      "contacts": {
+        "totalCount": 3,
+        "href": "https://rest.messagebird.com/groups/first-id/contacts"
+      },
+      "createdDatetime": "2018-07-25T11:47:42+00:00",
+      "updatedDatetime": "2018-07-25T14:03:09+00:00"
+    },
+    {
+      "id": "second-id",
+      "href": "https://rest.messagebird.com/groups/second-id",
+      "name": "Second",
+      "contacts": {
+        "totalCount": 4,
+        "href": "https://rest.messagebird.com/groups/second-id/contacts"
+      },
+      "createdDatetime": "2018-07-25T11:47:39+00:00",
+      "updatedDatetime": "2018-07-25T14:03:09+00:00"
+    }
+  ]
+}"""
+
 
 class TestGroup(unittest.TestCase):
 
     def test_group(self):
         http_client = Mock()
-        http_client.request.return_value = '{"id": "group-id","href": "https://rest.messagebird.com/groups/group-id","name": "Friends","contacts": {"totalCount": 3,"href": "https://rest.messagebird.com/groups/group-id"},"createdDatetime": "2018-07-25T12:16:10+00:00","updatedDatetime": "2018-07-25T12:16:23+00:00"}'
+        http_client.request.return_value = TEST_GROUP_RESPONSE
 
         group = Client('', http_client).group('group-id')
 
@@ -35,7 +84,7 @@ class TestGroup(unittest.TestCase):
 
     def test_list(self):
         http_client = Mock()
-        http_client.request.return_value = '{"offset": 0,"limit": 25,"count": 2,"totalCount": 2,"links": {"first": "https://rest.messagebird.com/groups?offset=0&limit=10","previous": null,"next": null,"last": "https://rest.messagebird.com/groups?offset=0&limit=10"},"items": [{"id": "first-id","href": "https://rest.messagebird.com/groups/first-id","name": "First","contacts": {"totalCount": 3,"href": "https://rest.messagebird.com/groups/first-id/contacts"},"createdDatetime": "2018-07-25T11:47:42+00:00","updatedDatetime": "2018-07-25T14:03:09+00:00"},{"id": "second-id","href": "https://rest.messagebird.com/groups/second-id","name": "Second","contacts": {"totalCount": 4,"href": "https://rest.messagebird.com/groups/second-id/contacts"},"createdDatetime": "2018-07-25T11:47:39+00:00","updatedDatetime": "2018-07-25T14:03:09+00:00"}]}'
+        http_client.request.return_value = TEST_LIST_RESPONSE
 
         group_list = Client('', http_client).group_list(limit=25, offset=0)
 

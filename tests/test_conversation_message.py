@@ -7,11 +7,34 @@ from dateutil.tz import tzutc
 from messagebird import Client
 
 
+LIST_MESSAGES_RESPONSE = """{
+    "count": 1,
+    "items": [
+        {
+            "id": "54445534",
+            "conversationId": "54345543543",
+            "channelId": "4535434354",
+            "type": "text",
+            "content": {
+                "text": "Hello"
+            },
+            "direction": "sent",
+            "status": "delivered",
+            "createdDatetime": "2019-04-02T08:54:54.608157775Z",
+            "updatedDatetime": "2019-04-02T08:54:54.63910221Z"
+        }
+    ],
+    "limit": 10,
+    "offset": 0,
+    "totalCount": 1
+}"""
+
+
 class TestConversationMessage(unittest.TestCase):
 
     def test_conversation_list_messages(self):
         http_client = Mock()
-        http_client.request.return_value = '{"count":1,"items":[{"id":"54445534","conversationId":"54345543543","channelId":"4535434354","type":"text","content":{"text":"Hello"},"direction":"sent","status":"delivered","createdDatetime":"2019-04-02T08:54:54.608157775Z","updatedDatetime":"2019-04-02T08:54:54.63910221Z"}],"limit":10,"offset":0,"totalCount":1}'
+        http_client.request.return_value = LIST_MESSAGES_RESPONSE
 
         msg = Client('', http_client).conversation_list_messages(54567)
 
@@ -30,7 +53,20 @@ class TestConversationMessage(unittest.TestCase):
 
     def test_create_message(self):
         http_client = Mock()
-        http_client.request.return_value = '{"id":"id","conversationId":"conversation-id","channelId":"channel-id","type":"text","content":{"text":"Example Text Message"},"direction":"sent","status":"pending","createdDatetime":"2019-04-02T11:57:52.142641447Z","updatedDatetime":"2019-04-02T11:57:53.142641447Z"}'
+        http_client.request.return_value = """
+            {
+                "id": "id",
+                "conversationId": "conversation-id",
+                "channelId": "channel-id",
+                "type": "text",
+                "content": {
+                    "text": "Example Text Message"
+                },
+                "direction": "sent",
+                "status": "pending",
+                "createdDatetime": "2019-04-02T11:57:52.142641447Z",
+                "updatedDatetime": "2019-04-02T11:57:53.142641447Z"
+            }"""
 
         data = {
             'channelId': 1234,

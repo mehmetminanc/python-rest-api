@@ -8,7 +8,30 @@ class TestContact(unittest.TestCase):
 
     def test_contact(self):
         http_client = Mock()
-        http_client.request.return_value = '{"id": "contact-id","href": "https://rest.messagebird.com/contacts/contact-id","msisdn": 31612345678,"firstName": "Foo","lastName": "Bar","customDetails": {"custom1": "First","custom2": "Second","custom3": "Third","custom4": "Fourth"},"groups": {"totalCount": 3,"href": "https://rest.messagebird.com/contacts/contact-id/groups"},"messages": {"totalCount": 5,"href": "https://rest.messagebird.com/contacts/contact-id/messages"},"createdDatetime": "2018-07-13T10:34:08+00:00","updatedDatetime": "2018-07-13T10:44:08+00:00"}'
+        http_client.request.return_value = """
+            {
+                "id": "contact-id",
+                "href": "https://rest.messagebird.com/contacts/contact-id",
+                "msisdn": 31612345678,
+                "firstName": "Foo",
+                "lastName": "Bar",
+                "customDetails": {
+                    "custom1": "First",
+                    "custom2": "Second",
+                    "custom3": "Third",
+                    "custom4": "Fourth"
+                },
+                "groups": {
+                    "totalCount": 3,
+                    "href": "https://rest.messagebird.com/contacts/contact-id/groups"
+                },
+                "messages": {
+                    "totalCount": 5,
+                    "href": "https://rest.messagebird.com/contacts/contact-id/messages"
+                },
+                "createdDatetime": "2018-07-13T10:34:08+00:00",
+                "updatedDatetime": "2018-07-13T10:44:08+00:00"
+            }"""
 
         contact = Client('', http_client).contact('contact-id')
 
@@ -38,7 +61,16 @@ class TestContact(unittest.TestCase):
 
     def test_contact_delete_invalid(self):
         http_client = Mock()
-        http_client.request.return_value = '{"errors": [{"code": 20,"description": "contact not found","parameter": null}]}'
+        http_client.request.return_value = """
+            {
+                "errors": [
+                    {
+                        "code": 20,
+                        "description": "contact not found",
+                        "parameter": null
+                    }
+                ]
+            }"""
 
         with self.assertRaises(ErrorException):
             Client('', http_client).contact_delete('non-existent-contact-id')
@@ -57,7 +89,67 @@ class TestContact(unittest.TestCase):
 
     def test_contact_list(self):
         http_client = Mock()
-        http_client.request.return_value = '{"offset": 0,"limit": 20,"count": 2,"totalCount": 2,"links": {"first": "https://rest.messagebird.com/contacts?offset=0","previous": null,"next": null,"last": "https://rest.messagebird.com/contacts?offset=0"},"items": [{"id": "first-id","href": "https://rest.messagebird.com/contacts/first-id","msisdn": 31612345678,"firstName": "Foo","lastName": "Bar","customDetails": {"custom1": null,"custom2": null,"custom3": null,"custom4": null},"groups": {"totalCount": 0,"href": "https://rest.messagebird.com/contacts/first-id/groups"},"messages": {"totalCount": 0,"href": "https://rest.messagebird.com/contacts/first-id/messages"},"createdDatetime": "2018-07-13T10:34:08+00:00","updatedDatetime": "2018-07-13T10:34:08+00:00"},{"id": "second-id","href": "https://rest.messagebird.com/contacts/second-id","msisdn": 49612345678,"firstName": "Hello","lastName": "World","customDetails": {"custom1": null,"custom2": null,"custom3": null,"custom4": null},"groups": {"totalCount": 0,"href": "https://rest.messagebird.com/contacts/second-id/groups"},"messages": {"totalCount": 0,"href": "https://rest.messagebird.com/contacts/second-id/messages"},"createdDatetime": "2018-07-13T10:33:52+00:00","updatedDatetime": null}]}'
+        http_client.request.return_value = """
+            {
+                "offset": 0,
+                "limit": 20,
+                "count": 2,
+                "totalCount": 2,
+                "links": {
+                    "first": "https://rest.messagebird.com/contacts?offset=0",
+                    "previous": null,
+                    "next": null,
+                    "last": "https://rest.messagebird.com/contacts?offset=0"
+                },
+                "items": [
+                    {
+                        "id": "first-id",
+                        "href": "https://rest.messagebird.com/contacts/first-id",
+                        "msisdn": 31612345678,
+                        "firstName": "Foo",
+                        "lastName": "Bar",
+                        "customDetails": {
+                            "custom1": null,
+                            "custom2": null,
+                            "custom3": null,
+                            "custom4": null
+                        },
+                        "groups": {
+                            "totalCount": 0,
+                            "href": "https://rest.messagebird.com/contacts/first-id/groups"
+                        },
+                        "messages": {
+                            "totalCount": 0,
+                            "href": "https://rest.messagebird.com/contacts/first-id/messages"
+                        },
+                        "createdDatetime": "2018-07-13T10:34:08+00:00",
+                        "updatedDatetime": "2018-07-13T10:34:08+00:00"
+                    },
+                    {
+                        "id": "second-id",
+                        "href": "https://rest.messagebird.com/contacts/second-id",
+                        "msisdn": 49612345678,
+                        "firstName": "Hello",
+                        "lastName": "World",
+                        "customDetails": {
+                            "custom1": null,
+                            "custom2": null,
+                            "custom3": null,
+                            "custom4": null
+                        },
+                        "groups": {
+                            "totalCount": 0,
+                            "href": "https://rest.messagebird.com/contacts/second-id/groups"
+                        },
+                        "messages": {
+                            "totalCount": 0,
+                            "href": "https://rest.messagebird.com/contacts/second-id/messages"
+                        },
+                        "createdDatetime": "2018-07-13T10:33:52+00:00",
+                        "updatedDatetime": null
+                    }
+                ]
+            }"""
 
         contact_list = Client('', http_client).contact_list(10, 20)
 

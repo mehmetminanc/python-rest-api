@@ -3,12 +3,43 @@ from unittest.mock import Mock
 
 from messagebird import Client
 
+TEST_LOOKUP_RESPONSE = """{
+  "href": "https://rest.messagebird.com/lookup/31612345678",
+  "countryCode": "NL",
+  "countryPrefix": 31,
+  "phoneNumber": 31612345678,
+  "type": "mobile",
+  "formats": {
+    "e164": "+31612345678",
+    "international": "+31 6 12345678",
+    "national": "06 12345678",
+    "rfc3966": "tel:+31-6-12345678"
+  },
+  "hlr": {
+    "id": "hlr-id",
+    "network": 20416,
+    "reference": "reference2000",
+    "status": "active",
+    "createdDatetime": "2015-12-15T08:19:24+00:00",
+    "statusDatetime": "2015-12-15T08:19:25+00:00"
+  }
+}"""
+
+TEST_LOOKUP_HLR_RESPONSE = """{
+  "id": "hlr-id",
+  "network": 20416,
+  "reference": "reference2000",
+  "status": "active",
+  "createdDatetime": "2015-12-15T08:19:24+00:00",
+  "statusDatetime": "2015-12-15T08:19:25+00:00"
+}"""
+
 
 class TestLookup(unittest.TestCase):
 
     def test_lookup(self):
         http_client = Mock()
-        http_client.request.return_value = '{"href": "https://rest.messagebird.com/lookup/31612345678","countryCode": "NL","countryPrefix": 31,"phoneNumber": 31612345678,"type": "mobile","formats": {"e164": "+31612345678","international": "+31 6 12345678","national": "06 12345678","rfc3966": "tel:+31-6-12345678"},"hlr": {"id": "hlr-id","network": 20416,"reference": "reference2000","status": "active","createdDatetime": "2015-12-15T08:19:24+00:00","statusDatetime": "2015-12-15T08:19:25+00:00"}}'
+        http_client.request.return_value = TEST_LOOKUP_RESPONSE
 
         lookup = Client('', http_client).lookup('0612345678', {'countryCode': 'NL'})
 
@@ -18,7 +49,7 @@ class TestLookup(unittest.TestCase):
 
     def test_lookup_hlr(self):
         http_client = Mock()
-        http_client.request.return_value = '{"id": "hlr-id","network": 20416,"reference": "reference2000","status": "active","createdDatetime": "2015-12-15T08:19:24+00:00","statusDatetime": "2015-12-15T08:19:25+00:00"}'
+        http_client.request.return_value = TEST_LOOKUP_HLR_RESPONSE
 
         lookup_hlr = Client('', http_client).lookup_hlr(31612345678, {'reference': 'reference2000'})
 

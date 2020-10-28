@@ -3,12 +3,40 @@ from unittest.mock import Mock
 
 from messagebird import Client
 
+TEST_CREATE_MMS_RESPONSE = """{
+  "originator": "test-org",
+  "body": "Rich test message",
+  "direction": "mt",
+  "recipients": {
+    "totalCount": 1,
+    "totalSentCount": 1,
+    "totalDeliveredCount": 0,
+    "totalDeliveryFailedCount": 0,
+    "items": [
+      {
+        "status": "sent",
+        "statusDatetime": "2019-06-04T13:54:48+00:00",
+        "recipient": 4915238456487
+      }
+    ]
+  },
+  "reference": null,
+  "createdDatetime": "2019-06-04T13:54:48+00:00",
+  "href": "https://rest.messagebird.com/mms/0a75f8f82b5d4377bd8fb5b22ac1e8ac",
+  "mediaUrls": [
+    "https://www.messagebird.com/assets/images/og/messagebird.gif"
+  ],
+  "scheduledDatetime": null,
+  "id": "0a75f8f82b5d4377bd8fb5b22ac1e8ac",
+  "subject": null
+}"""
+
 
 class TestMMS(unittest.TestCase):
 
     def test_create_mms(self):
         http_client = Mock()
-        http_client.request.return_value = '{"originator": "test-org", "body": "Rich test message", "direction": "mt", "recipients": {"totalCount": 1, "totalSentCount": 1, "totalDeliveredCount": 0, "totalDeliveryFailedCount": 0, "items": [{"status": "sent", "statusDatetime": "2019-06-04T13:54:48+00:00", "recipient": 4915238456487}]}, "reference": null, "createdDatetime": "2019-06-04T13:54:48+00:00", "href": "https://rest.messagebird.com/mms/0a75f8f82b5d4377bd8fb5b22ac1e8ac", "mediaUrls": ["https://www.messagebird.com/assets/images/og/messagebird.gif"], "scheduledDatetime": null, "id": "0a75f8f82b5d4377bd8fb5b22ac1e8ac", "subject": null}'
+        http_client.request.return_value = TEST_CREATE_MMS_RESPONSE
 
         params = {
             "originator": "test-org",

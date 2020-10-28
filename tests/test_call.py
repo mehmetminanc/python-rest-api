@@ -5,37 +5,76 @@ from unittest.mock import Mock
 from messagebird import Client
 from messagebird.base import Base
 
+TEST_CALL_RESPONSE = """{
+    "data": [
+        {
+            "id": "call-id",
+            "status": "ended",
+            "source": "16479311111",
+            "destination": "1416555555",
+            "createdAt": "2019-08-06T13:17:06Z",
+            "updatedAt": "2019-08-06T13:17:39Z",
+            "endedAt": "2019-08-06T13:17:39Z"
+        }
+    ],
+    "_links": {
+        "legs": "/calls/66bd9f08-a8af-40fe-a830-652d8dabc057/legs",
+        "self": "/calls/66bd9f08-a8af-40fe-a830-652d8bca357"
+    },
+    "pagination": {
+        "totalCount": 0,
+        "pageCount": 0,
+        "currentPage": 0,
+        "perPage": 0
+    }
+}"""
+
+TEST_CALL_LIST_RESPONSE = """{
+    "data": [
+        {
+            "id": "dda20377-72da-4846-9b2c-0fea3ad4bcb6",
+            "status": "no_answer",
+            "source": "16479311111",
+            "destination": "1416555555",
+            "createdAt": "2019-08-06T13:17:06Z",
+            "updatedAt": "2019-08-06T13:17:39Z",
+            "endedAt": "2019-08-06T13:17:39Z",
+            "_links": {
+                "legs": "/calls/dda20377-72da-4846-9b2c-0fea3ad4bcb6/legs",
+                "self": "/calls/dda20377-72da-4846-9b2c-0fea3ad4bcb6"
+            }
+        },
+        {
+            "id": "1541535b-9b80-4002-bde5-ed05b5ebed76",
+            "status": "ended",
+            "source": "16479311111",
+            "destination": "1416555556",
+            "createdAt": "2019-08-06T13:17:06Z",
+            "updatedAt": "2019-08-06T13:17:39Z",
+            "endedAt": "2019-08-06T13:17:39Z",
+            "_links": {
+                "legs": "/calls/1541535b-9b80-4002-bde5-ed05b5ebed76/legs",
+                "self": "/calls/1541535b-9b80-4002-bde5-ed05b5ebed76"
+            }
+        }
+    ],
+    "_links": {
+        "self": "/calls?page=1"
+    },
+    "pagination": {
+        "totalCount": 2,
+        "pageCount": 1,
+        "currentPage": 1,
+        "perPage": 10
+    }
+}"""
+
 
 class TestCall(unittest.TestCase):
 
     def test_call(self):
         http_client = Mock()
-        http_client.request.return_value = """
-            {
-               "data":[
-                  {
-                     "id":"call-id",
-                     "status":"ended",
-                     "source":"16479311111",
-                     "destination":"1416555555",
-                     "createdAt":"2019-08-06T13:17:06Z",
-                     "updatedAt":"2019-08-06T13:17:39Z",
-                     "endedAt":"2019-08-06T13:17:39Z"
-                  }
-               ],
-               "_links":{
-                  "legs":"/calls/66bd9f08-a8af-40fe-a830-652d8dabc057/legs",
-                  "self":"/calls/66bd9f08-a8af-40fe-a830-652d8bca357"
-               },
-               "pagination":{
-                  "totalCount":0,
-                  "pageCount":0,
-                  "currentPage":0,
-                  "perPage":0
-               }
-            }
-            """
-
+        http_client.request.return_value = TEST_CALL_RESPONSE
         call = Client('', http_client).call('call-id')
 
         http_client.request.assert_called_once_with('calls/call-id', 'GET', None)
@@ -44,48 +83,7 @@ class TestCall(unittest.TestCase):
 
     def test_call_list(self):
         http_client = Mock()
-        http_client.request.return_value = """
-            {
-               "data":[
-                  {
-                     "id":"dda20377-72da-4846-9b2c-0fea3ad4bcb6",
-                     "status":"no_answer",
-                     "source":"16479311111",
-                     "destination":"1416555555",
-                     "createdAt":"2019-08-06T13:17:06Z",
-                     "updatedAt":"2019-08-06T13:17:39Z",
-                     "endedAt":"2019-08-06T13:17:39Z",
-                     "_links":{
-                       "legs":"/calls/dda20377-72da-4846-9b2c-0fea3ad4bcb6/legs",
-                       "self":"/calls/dda20377-72da-4846-9b2c-0fea3ad4bcb6"
-                     }
-                  },
-                  {
-                     "id":"1541535b-9b80-4002-bde5-ed05b5ebed76",
-                     "status":"ended",
-                     "source":"16479311111",
-                     "destination":"1416555556",
-                     "createdAt":"2019-08-06T13:17:06Z",
-                     "updatedAt":"2019-08-06T13:17:39Z",
-                     "endedAt":"2019-08-06T13:17:39Z",
-                     "_links":{
-                       "legs":"/calls/1541535b-9b80-4002-bde5-ed05b5ebed76/legs",
-                       "self":"/calls/1541535b-9b80-4002-bde5-ed05b5ebed76"
-                     }
-                  }
-               ],
-               "_links": {
-                   "self": "/calls?page=1"
-               },
-               "pagination":{
-                  "totalCount":2,
-                  "pageCount":1,
-                  "currentPage":1,
-                  "perPage":10
-               }
-            }
-            """
-
+        http_client.request.return_value = TEST_CALL_LIST_RESPONSE
         callList = Client('', http_client).call_list(page=1)
 
         http_client.request.assert_called_once_with('calls/?page=1', 'GET', None)

@@ -6,12 +6,98 @@ from dateutil.tz import tzutc
 
 from messagebird import Client
 
+TEST_CONVERSATION_START_RESPONSE = """{
+    "id": "1234",
+    "contactId": "1234",
+    "contact": {
+        "id": "1234",
+        "href": "https://contacts.messagebird.com/v2/contacts/1234",
+        "msisdn": 99999999999,
+        "displayName": "99999999999",
+        "firstName": "",
+        "lastName": "",
+        "customDetails": {},
+        "attributes": {},
+        "createdDatetime": "2019-04-02T08:19:37Z",
+        "updatedDatetime": "2019-04-02T08:19:38Z"
+    },
+    "channels": [
+        {
+            "id": "1234",
+            "name": "channel-name",
+            "platformId": "sms",
+            "status": "active",
+            "createdDatetime": "2019-04-01T15:25:12Z",
+            "updatedDatetime": "0001-01-01T00:00:00Z"
+        }
+    ],
+    "status": "active",
+    "createdDatetime": "2019-04-02T08:19:37Z",
+    "updatedDatetime": "2019-04-02T08:54:42.497114599Z",
+    "lastReceivedDatetime": "2019-04-02T08:54:42.464955904Z",
+    "lastUsedChannelId": "1234",
+    "messages": {
+        "totalCount": 1,
+        "href": "https://conversations.messagebird.com/v1/conversations/1234/messages"
+    }
+}"""
+
+TEST_CONVERSATION_READ_RESPONSE = """{
+    "id": "57b96dbe0fda40f0a814f5e3268c30a9",
+    "contactId": "8846d44229094c20813cf9eea596e680",
+    "contact": {
+        "id": "8846d44229094c20813cf9eea596e680",
+        "href": "https://contacts.messagebird.com/v2/contacts/8846d44229094c20813cf9eea596e680",
+        "msisdn": 31617110163,
+        "displayName": "31617110163",
+        "firstName": "",
+        "lastName": "",
+        "customDetails": {},
+        "attributes": {},
+        "createdDatetime": "2019-04-02T08:54:39Z",
+        "updatedDatetime": "2019-04-02T08:54:40Z"
+    },
+    "channels": [
+        {
+            "id": "c0dae31e440145e094c4708b7d908842",
+            "name": "test",
+            "platformId": "sms",
+            "status": "active",
+            "createdDatetime": "2019-04-01T15:25:12Z",
+            "updatedDatetime": "0001-01-01T00:00:00Z"
+        }
+    ],
+    "status": "active",
+    "createdDatetime": "2019-04-02T08:54:38Z",
+    "updatedDatetime": "2019-04-02T14:24:09.192202886Z",
+    "lastReceivedDatetime": "2019-04-02T14:24:09.14826339Z",
+    "lastUsedChannelId": "c0dae31e440145e094c4708b7d908842",
+    "messages": {
+        "totalCount": 2,
+        "href": "https://conversations.messagebird.com/v1/conversations/57b96dbe0fda40f0a814f5e3268c30a9/messages"
+    }
+}"""
+
+TEST_CONVERSATION_UPDATE_RESPONSE = """{
+    "id": "07e823fdb36a462fb5e187d6d7b96493",
+    "contactId": "459a35432b0c4195abbdae353eb19359",
+    "status": "archived",
+    "createdDatetime": "2019-04-02T08:19:37Z",
+    "updatedDatetime": "2019-04-03T07:22:58.965421128Z",
+    "lastReceivedDatetime": "2019-04-02T12:02:22.707634424Z",
+    "lastUsedChannelId": "c0dae31e440145e094c4708b7d908842",
+    "messages": {
+        "totalCount": 16,
+        "href": "https://conversations.messagebird.com/v1/conversations/07e823fdb36a462fb5e187d6d7b96493/messages"
+    }
+}"""
+
 
 class TestConversation(unittest.TestCase):
 
     def test_conversation_start(self):
         http_client = Mock()
-        http_client.request.return_value = '{"id":"1234","contactId":"1234","contact":{"id":"1234","href":"https://contacts.messagebird.com/v2/contacts/1234","msisdn":99999999999,"displayName":"99999999999","firstName":"","lastName":"","customDetails":{},"attributes":{},"createdDatetime":"2019-04-02T08:19:37Z","updatedDatetime":"2019-04-02T08:19:38Z"},"channels":[{"id":"1234","name":"channel-name","platformId":"sms","status":"active","createdDatetime":"2019-04-01T15:25:12Z","updatedDatetime":"0001-01-01T00:00:00Z"}],"status":"active","createdDatetime":"2019-04-02T08:19:37Z","updatedDatetime":"2019-04-02T08:54:42.497114599Z","lastReceivedDatetime":"2019-04-02T08:54:42.464955904Z","lastUsedChannelId":"1234","messages":{"totalCount":1,"href":"https://conversations.messagebird.com/v1/conversations/1234/messages"}}'
+        http_client.request.return_value = TEST_CONVERSATION_START_RESPONSE
 
         data = {
             'channelId': '1234',
@@ -42,7 +128,7 @@ class TestConversation(unittest.TestCase):
 
     def test_conversation_read(self):
         http_client = Mock()
-        http_client.request.return_value = '{"id":"57b96dbe0fda40f0a814f5e3268c30a9","contactId":"8846d44229094c20813cf9eea596e680","contact":{"id":"8846d44229094c20813cf9eea596e680","href":"https://contacts.messagebird.com/v2/contacts/8846d44229094c20813cf9eea596e680","msisdn":31617110163,"displayName":"31617110163","firstName":"","lastName":"","customDetails":{},"attributes":{},"createdDatetime":"2019-04-02T08:54:39Z","updatedDatetime":"2019-04-02T08:54:40Z"},"channels":[{"id":"c0dae31e440145e094c4708b7d908842","name":"test","platformId":"sms","status":"active","createdDatetime":"2019-04-01T15:25:12Z","updatedDatetime":"0001-01-01T00:00:00Z"}],"status":"active","createdDatetime":"2019-04-02T08:54:38Z","updatedDatetime":"2019-04-02T14:24:09.192202886Z","lastReceivedDatetime":"2019-04-02T14:24:09.14826339Z","lastUsedChannelId":"c0dae31e440145e094c4708b7d908842","messages":{"totalCount":2,"href":"https://conversations.messagebird.com/v1/conversations/57b96dbe0fda40f0a814f5e3268c30a9/messages"}}'
+        http_client.request.return_value = TEST_CONVERSATION_READ_RESPONSE
 
         conversation = Client('', http_client).conversation_read('conversation-id')
 
@@ -58,7 +144,7 @@ class TestConversation(unittest.TestCase):
 
     def test_conversation_update(self):
         http_client = Mock()
-        http_client.request.return_value = '{"id":"07e823fdb36a462fb5e187d6d7b96493","contactId":"459a35432b0c4195abbdae353eb19359","status":"archived","createdDatetime":"2019-04-02T08:19:37Z","updatedDatetime":"2019-04-03T07:22:58.965421128Z","lastReceivedDatetime":"2019-04-02T12:02:22.707634424Z","lastUsedChannelId":"c0dae31e440145e094c4708b7d908842","messages":{"totalCount":16,"href":"https://conversations.messagebird.com/v1/conversations/07e823fdb36a462fb5e187d6d7b96493/messages"}}'
+        http_client.request.return_value = TEST_CONVERSATION_UPDATE_RESPONSE
 
         updated_request_data = {'status': 'archived'}
 

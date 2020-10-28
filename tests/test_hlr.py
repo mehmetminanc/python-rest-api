@@ -4,11 +4,23 @@ from unittest.mock import Mock
 from messagebird import Client
 
 
+TEST_HLR_RESPONSE = """{
+  "id": "hlr-id",
+  "href": "https://rest.messagebird.com/hlr/hlr-id",
+  "msisdn": 31612345678,
+  "network": 20406,
+  "reference": "MyReference",
+  "status": "sent",
+  "createdDatetime": "2015-01-04T13:14:08+00:00",
+  "statusDatetime": "2015-01-04T13:14:09+00:00"
+}"""
+
+
 class TestHLR(unittest.TestCase):
 
     def test_hlr(self):
         http_client = Mock()
-        http_client.request.return_value = '{"id":"hlr-id","href":"https://rest.messagebird.com/hlr/hlr-id","msisdn":31612345678,"network":20406,"reference":"MyReference","status": "sent","createdDatetime": "2015-01-04T13:14:08+00:00","statusDatetime": "2015-01-04T13:14:09+00:00"}'
+        http_client.request.return_value = TEST_HLR_RESPONSE
 
         hlr = Client('', http_client).hlr('hlr-id')
 

@@ -75,7 +75,10 @@ class Client:
         self.access_key = access_key
         self.http_client = http_client
 
-        self.conversation_api_root = CONVERSATION_API_WHATSAPP_SANDBOX_ROOT if Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX in features else CONVERSATION_API_ROOT
+        if Feature.ENABLE_CONVERSATIONS_API_WHATSAPP_SANDBOX in features:
+            self.conversation_api_root = CONVERSATION_API_WHATSAPP_SANDBOX_ROOT
+        else:
+            self.conversation_api_root = CONVERSATION_API_ROOT
 
     def _get_http_client(self, type=REST_TYPE):
         if self.http_client:
@@ -199,7 +202,8 @@ class Client:
         Args:
             limit(int)                     : The page limit.
             offset(int)                    : The page to list.
-            status(str)                    : Message status filter(scheduled, sent, buffered, delivered, expired or delivery_failed)
+            status(str)                    : Message status filter(scheduled, sent, buffered, delivered,
+                                                expired or delivery_failed)
         Returns:
             MessageList(object)            : The List of the message requested."""
         query = self._format_query(limit, offset)
@@ -228,7 +232,7 @@ class Client:
             originator(str): name of the originator
             recipients(str/list(str)): comma separated numbers or list of numbers in E164 format
             body(str)       : text message body
-            mediaUrl(str)   : list of URL's of attachments of the MMS message.
+            mediaUrls(str)   : list of URL's of attachments of the MMS message.
             subject(str)    : utf-encoded subject
             reference(str)  : client reference text
             scheduledDatetime(str) : scheduled date time in RFC3339 format
@@ -528,7 +532,10 @@ class Client:
         return NumberList().load(self.request(NUMBER_AVAILABLE_PATH + '/' + str(country), 'GET', params, NUMBER_TYPE))
 
     def purchase_number(self, number, country, billingIntervalMonths=1):
-        params = {'number': str(number), 'countryCode': str(country), 'billingIntervalMonths': int(billingIntervalMonths)}
+        params = {
+            'number': str(number),
+            'countryCode': str(country),
+            'billingIntervalMonths': int(billingIntervalMonths)}
         return Number().load(self.request(NUMBER_PATH, 'POST', params, NUMBER_TYPE))
 
     def update_number(self, number, tags):
